@@ -143,6 +143,8 @@ fn count_suffix_complexity(suffix: &ast::Suffix, starting_complexity: u16) -> u1
             }
             _ => {}
         },
+        #[cfg(feature = "roblox")]
+        ast::Suffix::TypeInstantiation(_) => {}
         _ => {}
     }
 
@@ -428,16 +430,17 @@ impl Visitor for HighCyclomaticComplexityVisitor {
 
 #[cfg(test)]
 mod tests {
-    use super::{super::test_util::test_lint, *};
+    use super::{super::test_util::*, *};
 
     #[test]
     #[cfg(feature = "roblox")]
     #[cfg_attr(debug_assertions, ignore)] // Remove these with the full_moon parser rewrite
     fn test_high_cyclomatic_complexity() {
-        test_lint(
+        test_lint_config(
             HighCyclomaticComplexityLint::new(HighCyclomaticComplexityConfig::default()).unwrap(),
             "high_cyclomatic_complexity",
             "high_cyclomatic_complexity",
+            TestUtilConfig::luau(),
         );
     }
 
@@ -445,10 +448,11 @@ mod tests {
     #[cfg(feature = "roblox")]
     #[cfg_attr(debug_assertions, ignore)]
     fn test_complex_var_expressions() {
-        test_lint(
+        test_lint_config(
             HighCyclomaticComplexityLint::new(HighCyclomaticComplexityConfig::default()).unwrap(),
             "high_cyclomatic_complexity",
             "complex_var_expressions",
+            TestUtilConfig::luau(),
         );
     }
 
